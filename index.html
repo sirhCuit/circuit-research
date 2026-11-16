@@ -79,17 +79,19 @@
       }
       .quiz-banner:hover, .quiz-banner:focus-visible { filter: brightness(1.13) saturate(1.12); }
       .qb-metal { color: #ffffff; }
-      .quiz-banner .qb-cta {
-        font-weight: 700; white-space: nowrap; display: inline-block;
-        transition: transform .25s ease;
-      }
-      .quiz-banner:hover .qb-cta, .quiz-banner:focus-visible .qb-cta {
-        transform: translateX(5px) scale(1.02);
-      }
       .qb-track { display: flex; width: max-content; animation: marquee 42s linear infinite; }
       .quiz-banner:hover .qb-track, .quiz-banner:focus-visible .qb-track { animation-play-state: paused; }
       .qb-set { display: flex; align-items: center; gap: 44px; padding-right: 44px; white-space: nowrap; }
-      .qb-sep { flex: none; font-size: 1.15em; font-weight: 300; }
+      .qb-orb {
+        flex: none; width: 9px; height: 9px; border-radius: 50%;
+        background: #ffffff;
+        box-shadow: 0 0 8px 2px rgba(255, 255, 255, .8), 0 0 18px 6px rgba(255, 255, 255, .35);
+        animation: orbPulse 2.6s ease-in-out infinite;
+      }
+      @keyframes orbPulse {
+        0%, 100% { box-shadow: 0 0 6px 1px rgba(255, 255, 255, .65), 0 0 14px 4px rgba(255, 255, 255, .28); }
+        50% { box-shadow: 0 0 10px 3px rgba(255, 255, 255, .95), 0 0 22px 8px rgba(255, 255, 255, .45); }
+      }
       .quiz-banner:focus-visible { outline: 3px solid #ffffff; outline-offset: -6px; box-shadow: inset 0 0 0 3px #030712; border-radius: 0; }
 
       .wrap { width: min(1120px, 100% - 40px); margin-inline: auto; }
@@ -546,8 +548,9 @@
         .hero-shade { background: linear-gradient(100deg, rgba(3, 14, 10, .96) 25%, rgba(3, 14, 10, .86) 68%, rgba(3, 14, 10, .62)), linear-gradient(to top, rgba(3, 14, 10, .94), rgba(3, 14, 10, 0) 46%); }
         .hero-in { padding: 46px 0 54px; }
         .hero-tag {
+          display: flex; width: 100%; justify-content: center; text-align: center;
           font-size: .66rem; letter-spacing: .09em; gap: 6px 8px; padding: 8px 12px;
-          border-radius: 16px; line-height: 1.5; max-width: 100%;
+          border-radius: 999px; line-height: 1.5; max-width: 100%;
         }
         .hero h1 { font-size: clamp(1.95rem, 9.2vw, 2.6rem); line-height: 1.1; max-width: 15ch; margin-top: 20px; }
         .hero h1 .glitch { font-size: 1em; white-space: normal; max-width: 100%; }
@@ -656,18 +659,16 @@
       <a class="quiz-banner" href="quiz.html">
         <span class="qb-track">
           <span class="qb-set">
-            <span class="qb-metal">Is your site up to accessibility standards, or is it quietly turning visitors away?</span>
-            <span class="qb-cta qb-metal">Take our 2–3 minute quiz, and find out now for free!</span>
-            <span class="qb-sep qb-metal" aria-hidden="true">|</span>
-            <span class="qb-metal">Prompt Products: dynamic AI prompt-flows that result in high-quality finished products</span>
-            <span class="qb-sep qb-metal" aria-hidden="true">|</span>
+            <span class="qb-metal">Is your site web accessibility compliant? Take our 2–3 minute quiz to find out for free!</span>
+            <span class="qb-orb" aria-hidden="true"></span>
+            <span class="qb-metal">Prompt Products are dynamic AI prompt-flows that result in high-quality finished products</span>
+            <span class="qb-orb" aria-hidden="true"></span>
           </span>
           <span class="qb-set" aria-hidden="true">
-            <span class="qb-metal">Is your site up to accessibility standards, or is it quietly turning visitors away?</span>
-            <span class="qb-cta qb-metal">Take our 2–3 minute quiz, and find out now for free!</span>
-            <span class="qb-sep qb-metal" aria-hidden="true">|</span>
-            <span class="qb-metal">Prompt Products: dynamic AI prompt-flows that result in high-quality finished products</span>
-            <span class="qb-sep qb-metal" aria-hidden="true">|</span>
+            <span class="qb-metal">Is your site web accessibility compliant? Take our 2–3 minute quiz to find out for free!</span>
+            <span class="qb-orb" aria-hidden="true"></span>
+            <span class="qb-metal">Prompt Products are dynamic AI prompt-flows that result in high-quality finished products</span>
+            <span class="qb-orb" aria-hidden="true"></span>
           </span>
         </span>
       </a>
