@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="color-scheme" content="light dark" />
+    <meta name="color-scheme" content="dark" />
     <meta name="description" content="Circuit Research — blockchain research in plain English. Protocol deep-dives, plain-English writing, and WCAG accessibility audits with plain-English recode reports." />
     <link rel="icon" href="data:," />
     <script>document.documentElement.classList.add("js");</script>
@@ -13,45 +13,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Sora:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=VT323&display=swap" rel="stylesheet" />
     <style>
       :root {
-        --bg: #eef4f1;
-        --bg-deep: #e2ece7;
-        --surface: #ffffff;
-        --surface-2: #f4f9f6;
-        --ink: #0b1a16;
-        --ink-soft: #33524a;
-        --ink-faint: #4d6f64;
-        --line: #c3d8cf;
-        --mint: #0a7753;
-        --mint-bright: #0e9e6e;
-        --cyan: #0a7186;
-        --amber: #9a6206;
-        --error: #c23333;
+        --bg: #04100c;
+        --bg-deep: #030a08;
+        --surface: #081a14;
+        --surface-2: #0a2019;
+        --ink: #eafff5;
+        --ink-soft: #a9d8c6;
+        --ink-faint: #6f9c8a;
+        --line: #17382c;
+        --mint: #3dffa8;
+        --mint-bright: #6dffc0;
+        --cyan: #3fd2f2;
+        --amber: #ffc44d;
+        --error: #ff8383;
         --hero-ink: #eafff5;
         --hero-soft: #b9e8d4;
-        --glow: rgba(14, 158, 110, .35);
-        --shadow: 0 18px 40px -18px rgba(6, 40, 30, .28);
+        --glow: rgba(61, 255, 168, .28);
+        --shadow: 0 18px 44px -16px rgba(0, 0, 0, .7);
         --radius: 18px;
-      }
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg: #04100c;
-          --bg-deep: #030a08;
-          --surface: #081a14;
-          --surface-2: #0a2019;
-          --ink: #eafff5;
-          --ink-soft: #a9d8c6;
-          --ink-faint: #6f9c8a;
-          --line: #17382c;
-          --mint: #3dffa8;
-          --mint-bright: #6dffc0;
-          --cyan: #3fd2f2;
-          --amber: #ffc44d;
-          --error: #ff8383;
-          --hero-ink: #eafff5;
-          --hero-soft: #b9e8d4;
-          --glow: rgba(61, 255, 168, .28);
-          --shadow: 0 18px 44px -16px rgba(0, 0, 0, .7);
-        }
       }
 
       * { box-sizing: border-box; }
@@ -84,9 +63,7 @@
         transition: top .25s ease;
       }
       .skip-link:focus { top: 14px; }
-      @media (prefers-color-scheme: dark) {
-        .tool-btn.primary, .skip-link { color: #04120c; }
-      }
+      .tool-btn.primary, .skip-link { color: #04120c; }
 
       /* ---------- self-check banner ---------- */
       .quiz-banner {
@@ -133,7 +110,7 @@
       }
       nav.main-nav { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
       nav.main-nav a {
-        color: var(--ink-soft); text-decoration: none; font-size: .92rem; font-weight: 600;
+        color: var(--ink-soft); text-decoration: none; font-size: .92rem; font-weight: 600; white-space: nowrap;
         padding: 8px 12px; border-radius: 999px; position: relative;
         display: inline-flex; align-items: center; min-height: 44px;
       }
@@ -374,7 +351,7 @@
         transition: transform .2s ease, border-color .2s ease, background .2s ease;
       }
       .tool-btn:hover { transform: translateY(-2px); border-color: var(--mint); }
-      .tool-btn.primary { background: var(--mint); border-color: var(--mint); color: #ffffff; }
+      .tool-btn.primary { background: var(--mint); border-color: var(--mint); color: #04120c; }
       .tool-results { margin-top: 18px; }
       .tool-results:empty { margin-top: 0; }
       .tool-score { font-family: "Chakra Petch", sans-serif; font-weight: 700; font-size: 1.05rem; }
