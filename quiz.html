@@ -798,48 +798,9 @@
         .ticker-track { animation: none; flex-wrap: wrap; width: auto; }
         .ticker-set[aria-hidden="true"] { display: none; }
       }
-      /* ---------- password gate ---------- */
-      .gate-overlay {
-        position: fixed; inset: 0; z-index: 1000; background: var(--bg);
-        display: flex; align-items: center; justify-content: center; padding: 24px;
-      }
-      .gate-overlay[hidden] { display: none; }
-      body.gate-locked { overflow: hidden; }
-      .gate-card {
-        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
-        box-shadow: var(--shadow); width: 100%; max-width: 420px; padding: 32px 28px;
-      }
-      .gate-brand {
-        font-family: "Chakra Petch", sans-serif; font-weight: 700; font-size: 1.05rem;
-        letter-spacing: .04em; color: var(--ink);
-        display: inline-flex; align-items: center; gap: 10px;
-      }
-      .gate-brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--mint); }
-      .gate-prompt { margin: 16px 0 0; color: var(--ink-soft); }
-      .gate-form { margin-top: 20px; display: grid; gap: 10px; }
-      .gate-form label { font-weight: 600; }
-      .gate-form input {
-        font: inherit; color: var(--ink); background: var(--surface-2);
-        border: 1px solid var(--ink-faint); border-radius: 11px;
-        padding: 12px 14px; min-height: 46px; width: 100%;
-      }
-      .gate-error { margin: 0; color: var(--error); font-weight: 600; }
-      .gate-error[hidden] { display: none; }
     </style>
   </head>
   <body>
-    <div class="gate-overlay" id="cr-gate" role="dialog" aria-modal="true" aria-labelledby="cr-gate-prompt">
-      <div class="gate-card">
-        <span class="gate-brand"><span class="dot" aria-hidden="true"></span>CIRCUIT&nbsp;RESEARCH</span>
-        <p class="gate-prompt" id="cr-gate-prompt">This site is not public yet. Enter the password to come in.</p>
-        <form class="gate-form" id="cr-gate-form" novalidate>
-          <label for="cr-gate-password">Password</label>
-          <input type="password" id="cr-gate-password" name="password" autocomplete="current-password" />
-          <p class="gate-error" id="cr-gate-error" role="alert" hidden></p>
-          <button type="submit" class="tool-btn primary">Enter</button>
-        </form>
-      </div>
-    </div>
 
     <a class="skip-link" href="#main">Skip to content</a>
 
@@ -1280,63 +1241,5 @@
       })();
     </script>
 
-    <script>
-      /* ---- password gate ----
-         Only the SHA-256 hash of the password lives in this file, never the
-         password itself. A correct entry is remembered on this device. */
-      (function () {
-        var GATE_HASH = "2b2064f9fc99533beb51abff3f905cdaf5063bcdcdbbc049c984167576a40b34";
-        var gate = document.getElementById("cr-gate");
-        if (!gate) return;
-        var form = document.getElementById("cr-gate-form");
-        var input = document.getElementById("cr-gate-password");
-        var error = document.getElementById("cr-gate-error");
-        var pageEls = document.querySelectorAll("body > .skip-link, body > header, body > main, body > footer");
-
-        var remembered = null;
-        try { remembered = localStorage.getItem("cr-gate"); } catch (e) {}
-        if (remembered === GATE_HASH) { gate.hidden = true; return; }
-
-        pageEls.forEach(function (el) {
-          el.inert = true;
-          el.setAttribute("aria-hidden", "true");
-        });
-        document.body.classList.add("gate-locked");
-        input.focus();
-
-        gate.addEventListener("keydown", function (ev) {
-          if (ev.key !== "Tab") return;
-          var focusables = gate.querySelectorAll("input, button");
-          if (!focusables.length) return;
-          var first = focusables[0];
-          var last = focusables[focusables.length - 1];
-          if (ev.shiftKey && document.activeElement === first) { ev.preventDefault(); last.focus(); }
-          else if (!ev.shiftKey && document.activeElement === last) { ev.preventDefault(); first.focus(); }
-        });
-
-        form.addEventListener("submit", function (ev) {
-          ev.preventDefault();
-          var data = new TextEncoder().encode(input.value);
-          crypto.subtle.digest("SHA-256", data).then(function (buf) {
-            var bytes = new Uint8Array(buf), hex = "";
-            for (var i = 0; i < bytes.length; i++) { hex += ("0" + bytes[i].toString(16)).slice(-2); }
-            if (hex === GATE_HASH) {
-              try { localStorage.setItem("cr-gate", GATE_HASH); } catch (e) {}
-              pageEls.forEach(function (el) {
-                el.inert = false;
-                el.removeAttribute("aria-hidden");
-              });
-              document.body.classList.remove("gate-locked");
-              gate.hidden = true;
-            } else {
-              error.textContent = "Wrong password.";
-              error.hidden = false;
-              input.value = "";
-              input.focus();
-            }
-          });
-        });
-      })();
-    </script>
   </body>
 </html>
