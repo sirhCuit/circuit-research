@@ -75,10 +75,17 @@
         animation: bannerSheen 9s ease-in-out infinite alternate;
       }
       @keyframes bannerSheen { from { background-position: 0% 0; } to { background-position: 100% 0; } }
-      .quiz-banner:hover { filter: brightness(1.06); }
-      .qb-track { display: flex; width: max-content; animation: marquee 32s linear infinite; }
+      .quiz-banner:hover { filter: brightness(1.09); }
+      .quiz-banner:hover .qb-cta, .quiz-banner:focus-visible .qb-cta { text-decoration-thickness: 2px; }
+      .qb-arrow { display: inline-block; transition: transform .25s ease; }
+      .quiz-banner:hover .qb-arrow, .quiz-banner:focus-visible .qb-arrow { transform: translateY(2px); }
+      .qb-chip {
+        font-family: "IBM Plex Mono", monospace; font-size: .72rem; font-weight: 700; letter-spacing: .12em;
+        background: #04120c; color: #3dffa8; border-radius: 999px; padding: 3px 9px;
+      }
+      .qb-track { display: flex; width: max-content; animation: marquee 42s linear infinite; }
       .quiz-banner:hover .qb-track, .quiz-banner:focus-visible .qb-track { animation-play-state: paused; }
-      .qb-set { display: flex; align-items: center; gap: 14px; padding-right: 14px; white-space: nowrap; }
+      .qb-set { display: flex; align-items: center; gap: 44px; padding-right: 44px; white-space: nowrap; }
       .qb-sep { opacity: .5; font-size: .8em; }
       .quiz-banner .qb-cta { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
       .quiz-banner:focus-visible { outline: 3px solid #04120c; outline-offset: -3px; border-radius: 0; }
@@ -623,6 +630,7 @@
         .qb-track { animation: none; flex-wrap: wrap; width: auto; }
         .qb-set[aria-hidden="true"] { display: none; }
         nav.main-nav a.nav-pp { animation: none; }
+        .qb-arrow { transition: none; }
       }
     </style>
   </head>
@@ -648,14 +656,16 @@
         <span class="qb-track">
           <span class="qb-set">
             <span>Is your site accessible — or quietly turning visitors away?</span>
-            <span class="qb-cta">Take the 2–3 minute self-check <span aria-hidden="true">↓</span></span>
+            <span class="qb-chip">FREE</span>
+            <span class="qb-cta">Take the 2–3 minute self-check <span class="qb-arrow" aria-hidden="true">↓</span></span>
             <span class="qb-sep" aria-hidden="true">◆</span>
             <span>Prompt Products: dynamic AI prompt-flows that result in high-quality finished products</span>
             <span class="qb-sep" aria-hidden="true">◆</span>
           </span>
           <span class="qb-set" aria-hidden="true">
             <span>Is your site accessible — or quietly turning visitors away?</span>
-            <span class="qb-cta">Take the 2–3 minute self-check <span aria-hidden="true">↓</span></span>
+            <span class="qb-chip">FREE</span>
+            <span class="qb-cta">Take the 2–3 minute self-check <span class="qb-arrow" aria-hidden="true">↓</span></span>
             <span class="qb-sep" aria-hidden="true">◆</span>
             <span>Prompt Products: dynamic AI prompt-flows that result in high-quality finished products</span>
             <span class="qb-sep" aria-hidden="true">◆</span>
