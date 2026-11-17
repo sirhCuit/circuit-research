@@ -112,14 +112,14 @@
         font-family: "Chakra Petch", sans-serif; font-weight: 700;
         font-size: 1.05rem; letter-spacing: .04em; color: var(--ink);
         text-decoration: none; display: inline-flex; align-items: center; gap: 10px; min-height: 44px;
-        white-space: nowrap;
+        white-space: nowrap; margin-right: auto;
       }
       .wordmark .dot {
         width: 10px; height: 10px; border-radius: 50%;
         background: var(--mint); box-shadow: 0 0 0 0 var(--glow);
         animation: nodePulse 2.6s ease-out infinite;
       }
-      nav.main-nav { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+      nav.main-nav { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; flex: 1; }
       nav.main-nav a {
         color: var(--ink-soft); text-decoration: none; font-size: .92rem; font-weight: 600; white-space: nowrap;
         padding: 8px 12px; border-radius: 999px; position: relative;
@@ -527,20 +527,19 @@
 
         #services, #signals, #about, #contact { scroll-margin-top: 122px; }
 
-        /* header: brand row, then an even 4-up nav row with real tap targets */
-        .topbar-in { padding: 10px 0 8px; flex-wrap: wrap; gap: 4px 12px; }
-        .wordmark { font-size: .98rem; }
+        /* header: one merged block, wordmark flows inline with the nav links */
+        .topbar-in { padding: 10px 0 8px; flex-wrap: wrap; gap: 4px 12px; justify-content: center; }
+        .wordmark { font-size: .98rem; margin-right: 0; }
         nav.main-nav {
-          width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 0 6px;
-          border-top: 1px solid var(--line); padding-top: 4px;
+          display: flex; flex-wrap: wrap; justify-content: center; gap: 0 6px;
         }
         nav.main-nav a {
-          display: flex; align-items: flex-start; justify-content: center;
-          min-height: 44px; padding: 3px 10px 8px; font-size: .88rem; text-align: center;
+          display: flex; align-items: center; justify-content: center;
+          min-height: 44px; padding: 8px 10px; font-size: .88rem; text-align: center;
         }
-        nav.main-nav a.nav-pp { flex: 0 0 100%; align-items: flex-end; padding: 8px 10px 3px; }
+        nav.main-nav a.nav-pp { flex: 0 0 auto; align-items: center; padding: 8px 10px; }
         nav.main-nav a::after { left: 20%; right: 20%; bottom: 6px; }
-        nav.main-nav a:not(.nav-pp)::after { bottom: auto; top: 27px; }
+        nav.main-nav a:not(.nav-pp)::after { bottom: 6px; top: auto; }
         nav.main-nav a.nav-pp::after { display: none; }
 
         /* hero: darker shade for text contrast, tighter rhythm, stacked CTAs */
@@ -661,8 +660,8 @@
 
     <header class="topbar">
       <div class="wrap topbar-in">
-        <a class="wordmark" href="#top"><span class="dot" aria-hidden="true"></span>CIRCUIT&nbsp;RESEARCH</a>
         <nav class="main-nav" aria-label="Page sections">
+          <a class="wordmark" href="#top"><span class="dot" aria-hidden="true"></span>CIRCUIT&nbsp;RESEARCH</a>
           <a class="nav-pp" href="#prompt-products">Prompt Products</a>
           <a href="#services">Services</a>
           <a href="#signals">Research</a>
