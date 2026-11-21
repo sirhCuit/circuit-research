@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>Chris "sirhC" Morales — CV</title>
+<meta name="description" content="One-page interactive CV for Chris &quot;sirhC&quot; Morales: AI training and SI development, web accessibility auditing, web development, plain-English technical writing.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Sora:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#030a08; --bg:#04100c; --card:#071a13; --card-2:#0a241a;
+    --ink:#eafff5; --ink-soft:#a9d8c6; --ink-faint:#6f9c8a;
+    --mint:#3dffa8; --mint-bright:#6dffc0; --cyan:#3fd2f2; --amber:#ffc44d;
+    --line:#17382c; --focus:#3dffa8; --glow:rgba(61,255,168,.28);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; color:var(--ink);
+    font-family:"Sora",system-ui,-apple-system,"Segoe UI",sans-serif;
+    background:#04100c;
+  }
+  .skip{position:absolute; left:-9999px; top:0; background:var(--mint); color:#04100c; padding:.75rem 1rem; z-index:50; border-radius:0 0 .5rem 0; font-weight:700}
+  .skip:focus{left:0}
+  :focus-visible{outline:3px solid var(--focus); outline-offset:2px; border-radius:4px}
+  .page{position:relative; z-index:1; min-height:100dvh; display:grid; grid-template-rows:auto auto 1fr auto; gap:.9rem; max-width:1060px; margin:0 auto; padding:clamp(.7rem,2vh,1.2rem) clamp(1rem,3vw,2rem)}
+  header.top{position:relative; display:flex; flex-wrap:wrap; align-items:end; justify-content:space-between; gap:.35rem 1.25rem; padding:.15rem 0 .6rem;}
+  header.top > div, header.top > p{position:relative; z-index:1}
+  .divider{
+    position:relative; height:2px; border-radius:2px;
+    background:linear-gradient(90deg, transparent, var(--mint) 12%, var(--mint-bright) 50%, var(--mint) 88%, transparent);
+    box-shadow:0 0 10px rgba(61,255,168,.35), 0 0 26px rgba(61,255,168,.18);
+  }
+  .divider > canvas.barfire{position:absolute; left:0; bottom:0; width:100%; height:64px; pointer-events:none; -webkit-mask-image:linear-gradient(to top,#000 46%,transparent 96%); mask-image:linear-gradient(to top,#000 46%,transparent 96%)}
+  h1{font-family:"Chakra Petch","Sora",sans-serif; font-weight:700; font-size:clamp(1.5rem,6vw,2.25rem); line-height:1.02; margin:0; letter-spacing:.01em}
+  .headline{font-weight:600; font-size:clamp(.88rem,3.6vw,1.02rem); color:var(--mint); margin:.3rem 0 0}
+  .meta{font-size:.88rem; color:var(--ink-faint); font-weight:500; text-align:right; font-family:"IBM Plex Mono",ui-monospace,monospace}
+  .meta a{color:var(--cyan); font-weight:600}
+  main{display:grid; grid-template-columns:1.55fr 1fr; gap:1rem; min-height:0}
+  .card{background:linear-gradient(180deg,var(--card-2),var(--card)); border:1px solid var(--line); border-radius:18px; box-shadow:0 10px 30px rgba(0,0,0,.45), 0 0 0 1px rgba(61,255,168,.04), 0 0 24px -12px var(--glow); padding:1rem 1.1rem; transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease}
+  .card.glow-on{transform:translateY(-3px) scale(1.005); border-color:rgba(61,255,168,.65); box-shadow:0 16px 30px -16px rgba(61,255,168,.30), 0 6px 14px -8px rgba(0,0,0,.55), 0 0 26px -6px rgba(61,255,168,.38), inset 0 0 12px rgba(61,255,168,.10)}
+  @media (hover:hover){
+    .card:hover{transform:translateY(-3px) scale(1.005); border-color:rgba(61,255,168,.65); box-shadow:0 16px 30px -16px rgba(61,255,168,.30), 0 6px 14px -8px rgba(0,0,0,.55), 0 0 26px -6px rgba(61,255,168,.38), inset 0 0 12px rgba(61,255,168,.10)}
+  }
+  .card:focus-within{border-color:rgba(61,255,168,.65); box-shadow:0 16px 30px -16px rgba(61,255,168,.30), 0 6px 14px -8px rgba(0,0,0,.55), 0 0 26px -6px rgba(61,255,168,.38), inset 0 0 12px rgba(61,255,168,.10)}
+  .card h2{font-family:"Chakra Petch","Sora",sans-serif; font-size:1.06rem; margin:0 0 .55rem; letter-spacing:.06em; text-transform:uppercase; color:var(--mint-bright)}
+  .tabs{display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.7rem}
+  .tab{min-height:44px; padding:.55rem 1rem; border-radius:999px; border:2px solid var(--line); background:transparent; color:var(--ink); font:inherit; font-weight:600; font-size:.92rem; cursor:pointer}
+  .tab[aria-pressed="true"]{background:var(--mint); border-color:var(--mint); color:#04100c}
+  .panel h3{font-family:"Chakra Petch","Sora",sans-serif; margin:.1rem 0 .3rem; font-size:1.12rem}
+  .panel .role{font-weight:600; color:var(--amber); font-size:.95rem; margin:0 0 .45rem; font-family:"IBM Plex Mono",ui-monospace,monospace}
+  .panel ul{margin:.2rem 0 0; padding-left:1.15rem; line-height:1.45; font-size:.97rem; color:var(--ink-soft)}
+  .panel li{margin:.18rem 0}
+  .basics ul{list-style:none; margin:0; padding:0; line-height:1.5; font-size:.97rem; color:var(--ink-soft)}
+  .basics li{margin:.42rem 0}
+  .basics .k{display:block; font-weight:600; font-size:.78rem; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint); font-family:"IBM Plex Mono",ui-monospace,monospace}
+  .skills{display:flex; flex-wrap:wrap; gap:.45rem; margin-top:.2rem}
+  .chip{border:1.5px solid var(--mint); color:var(--mint-bright); border-radius:999px; padding:.34rem .7rem; font-weight:600; font-size:.85rem; background:rgba(61,255,168,.06)}
+  footer.qr{display:flex; align-items:center; gap:1.1rem; background:#020604; border:1px solid var(--line); color:var(--ink); border-radius:18px; padding:.8rem 1.1rem; box-shadow:0 0 24px -10px var(--glow)}
+  footer.qr img{width:92px; height:92px; border-radius:8px; background:#fff; flex:none}
+  footer.qr .t1{font-family:"Chakra Petch","Sora",sans-serif; font-weight:700; font-size:1.25rem; margin:0; color:var(--mint-bright)}
+  footer.qr .t2{margin:.2rem 0 0; font-size:.93rem; color:var(--ink-soft)}
+  footer.qr a{color:var(--mint); font-weight:700}
+
+  /* Background: the Circuit Research landing page treatment. Same hero art,
+     same slow kenDrift, same shade stack, plus one uniform wash so the CV's
+     full-width text keeps its contrast over the art. Decorative layers only. */
+  .bg-art{
+    position:fixed; inset:0; z-index:0; width:100%; height:100%;
+    object-fit:cover; object-position:78% 50%; pointer-events:none;
+    animation:kenDrift 26s ease-in-out infinite alternate;
+  }
+  .bg-shade{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      linear-gradient(rgba(3,14,10,.38), rgba(3,14,10,.38)),
+      linear-gradient(100deg, rgba(3,14,10,.96) 30%, rgba(3,14,10,.72) 58%, rgba(3,14,10,.28) 100%),
+      linear-gradient(to top, rgba(3,14,10,.9), rgba(3,14,10,0) 42%);
+  }
+  @keyframes kenDrift{ from{transform:scale(1) translateX(0)} to{transform:scale(1.09) translateX(-1.6%)} }
+  @media (max-width:760px){
+    main{grid-template-columns:1fr}
+    .meta{text-align:left}
+    footer.qr img{width:76px; height:76px}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important}
+  }
+</style>
+</head>
+<body>
+<img class="bg-art" src="hero-art.webp" alt="" aria-hidden="true">
+<div class="bg-shade" aria-hidden="true"></div>
+<a class="skip" href="#main">Skip to main content</a>
+<div class="page">
+  <header class="top">
+    <div>
+      <h1>Chris "sirhC" Morales</h1>
+      <p class="headline">AI Training &amp; SI Development · Web Accessibility Auditing · Plain-English Technical Writing</p>
+    </div>
+    <p class="meta">Magic Valley Idaho<br>
+    <a href="https://www.linkedin.com/in/circuit-research/">linkedin.com/in/circuit-research</a></p>
+  </header>
+
+  <div class="divider" aria-hidden="true"><canvas class="barfire" id="barfire"></canvas></div>
+
+  <main id="main">
+    <section class="card" aria-labelledby="focus-h">
+      <h2 id="focus-h">My Focus</h2>
+      <div class="tabs" role="group" aria-label="Choose a focus area">
+        <button class="tab" type="button" data-panel="now" aria-pressed="true">Currently</button>
+        <button class="tab" type="button" data-panel="recent" aria-pressed="false">Recently</button>
+        <button class="tab" type="button" data-panel="craft" aria-pressed="false">Older</button>
+      </div>
+      <div class="panel" id="panel-now">
+        <h3>Circuit Research</h3>
+        <p class="role">Founder · Oct 2026 to present</p>
+        <ul>
+          <li>Prewritten AI flows called Prompt Products that result in a variety of unique, publish-ready digital products.</li>
+          <li>Advanced web development, and blockchain topics translated into plain English, and then broadcast to LinkedIn &amp; Threads.</li>
+          <li>Web accessibility audits, and reports for business owners seeking to achieve compliance with accessibility laws.</li>
+          <li>Other services available by request including whitepaper summaries, application tutorials, and custom project reports.</li>
+        </ul>
+      </div>
+      <div class="panel" id="panel-recent" hidden>
+        <h3>AI Training &amp; SI Development</h3>
+        <p class="role">Specialist, contract · May 2026 to present</p>
+        <ul>
+          <li>Writing, and development of AI system instructions, scenario prompts, and grading rubrics. These are the training materials required for AI to function seamlessly on the surface.</li>
+          <li>Output evaluation and quality review. This is where the AI’s output is scrutinized against grading rubrics, and the human agent typically goes back to writing.</li>
+          <li>Having an epiphany realizing that anything AI creates is, at its root, a human creation given the grueling nature of AI training, and development.</li>
+        </ul>
+      </div>
+      <div class="panel" id="panel-craft" hidden>
+        <h3>Technical Education, Technical Outcomes</h3>
+        <p class="role">Educational, and professional experience</p>
+        <ul>
+          <li>Technical Writing &amp; User Experience Design (B.S.), Utah State University, 2016.</li>
+          <li>WordPress Development for a private firm, 2022.</li>
+          <li>Freelance fulfillment on web projects, and paid advertising for small businesses, 2022 through 2024.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card basics" aria-labelledby="basics-h">
+      <h2 id="basics-h">Basics</h2>
+      <ul>
+        <li><span class="k">Education</span>Technical English major, Utah State University</li>
+        <li><span class="k">Earlier roles</span>Network Operations (NOC) · Paid advertising</li>
+        <li><span class="k">Signature skills</span>
+          <span class="skills">
+            <span class="chip">AI output evaluation</span>
+            <span class="chip">Rubric design</span>
+            <span class="chip">WCAG 2.2 auditing</span>
+            <span class="chip">Prompt systems</span>
+            <span class="chip">Plain-English writing</span>
+          </span>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="qr">
+    <img src="qr-samples-cr.png" alt="QR code linking to the Interactive Project Samples page on Circuit Research" width="370" height="370">
+    <div>
+      <p class="t1">Interactive Project Samples</p>
+      <p class="t2">Scan the code, or visit
+      <a href="https://circuit-research.com/samples.html">circuit-research.com/samples</a>.
+      Live demos of the work described above.</p>
+    </div>
+  </footer>
+</div>
+
+<script>
+  (function(){
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+    var panels = { now: document.getElementById('panel-now'), recent: document.getElementById('panel-recent'), craft: document.getElementById('panel-craft') };
+    tabs.forEach(function(tab){
+      tab.addEventListener('click', function(){
+        tabs.forEach(function(t){ t.setAttribute('aria-pressed','false'); });
+        tab.setAttribute('aria-pressed','true');
+        Object.keys(panels).forEach(function(k){ panels[k].hidden = (k !== tab.getAttribute('data-panel')); });
+      });
+    });
+  })();
+</script>
+
+<script>
+  (function(){
+    // SPITE card behavior: tap/click toggles the glow state
+    Array.prototype.forEach.call(document.querySelectorAll('.card'), function(card){
+      card.addEventListener('click', function(){ card.classList.toggle('glow-on'); });
+    });
+
+    // Bar flames, blend-mode recipe (after Jon Kantner's CSS Blend Mode Fire):
+    // many soft radial-gradient particles, additively blended so they merge
+    // into one flame body instead of reading as separate dots. Particles are
+    // born on the standalone divider bar, shrink as they rise, and jitter every
+    // frame. A few percent are wisps: thin, fast, tall, and gone without a fade.
+    var cv = document.getElementById('barfire');
+    if(!cv || !cv.getContext) return;
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var ctx = cv.getContext('2d');
+    var W = 0, H = 64, DPR = Math.min(window.devicePixelRatio || 1, 2);
+    var TARGET = 160;
+
+    var sprite = document.createElement('canvas');
+    sprite.width = sprite.height = 64;
+    var sctx = sprite.getContext('2d');
+    var g = sctx.createRadialGradient(32,32,0,32,32,32);
+    g.addColorStop(0, 'rgba(240,255,248,0.95)');
+    g.addColorStop(0.35, 'rgba(140,255,205,0.55)');
+    g.addColorStop(0.65, 'rgba(61,255,168,0.22)');
+    g.addColorStop(1, 'rgba(61,255,168,0)');
+    sctx.fillStyle = g; sctx.fillRect(0,0,64,64);
+
+    var hotspots = [];
+    function makeHotspots(){
+      hotspots = [];
+      var n = Math.max(3, Math.round(W / 170));
+      for(var i = 0; i < n; i++) hotspots.push((i + 0.15 + Math.random() * 0.7) * (W / n));
+    }
+    function size(){
+      var w = cv.clientWidth || cv.parentElement.clientWidth || 0;
+      if(!w) return;
+      W = w;
+      cv.width = Math.round(W * DPR);
+      cv.height = Math.round(H * DPR);
+      TARGET = Math.max(120, Math.min(260, Math.round(W / 6)));
+      makeHotspots();
+    }
+    size();
+    window.addEventListener('resize', size);
+
+    function spawnX(){
+      if(hotspots.length && Math.random() < 0.6){
+        var hs = hotspots[Math.floor(Math.random() * hotspots.length)];
+        return hs + (Math.random() + Math.random() - 1) * 34;
+      }
+      return Math.random() * W;
+    }
+    function spawn(){
+      var wisp = Math.random() < 0.06;
+      return {
+        x: spawnX(),
+        y: H + 2,
+        r: wisp ? 3 + Math.random() * 3 : 5 + Math.random() * 9,
+        vy: wisp ? 1.8 + Math.random() * 1.0 : 0.8 + Math.random() * 1.2,
+        cap: wisp ? 56 + Math.random() * 6 : 26 + Math.random() * 18,
+        alpha: wisp ? 0.4 : 0.55,
+        wisp: wisp,
+        sway: Math.random() * Math.PI * 2,
+        swaySpeed: 0.04 + Math.random() * 0.06,
+        seed: Math.random() * 100
+      };
+    }
+    var parts = [];
+    for(var i = 0; i < 160; i++){ var p0 = spawn(); p0.y = H - Math.random() * p0.cap; parts.push(p0); }
+
+    var running = true, frame = 0;
+    document.addEventListener('visibilitychange', function(){ running = !document.hidden; if(running) requestAnimationFrame(tick); });
+
+    function tick(){
+      if(!running) return;
+      if(!W) size();
+      frame++;
+      if(frame % 360 === 0) makeHotspots();
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'lighter';
+      while(parts.length < TARGET){ parts.push(spawn()); if(Math.random() < 0.4) break; }
+      for(var i = parts.length - 1; i >= 0; i--){
+        var p = parts[i];
+        p.sway += p.swaySpeed;
+        p.x += Math.sin(p.sway + p.seed) * 0.3 + (Math.random() - 0.5) * 0.7;
+        p.y -= p.vy;
+        var risen = H - p.y;
+        var t = risen / p.cap;
+        if(t >= 1){ parts.splice(i, 1); continue; }
+        var flick = 0.72 + 0.28 * Math.sin(p.sway * 6.1 + p.seed * 3);
+        var a = p.wisp ? p.alpha * Math.pow(1 - t, 1.7) : p.alpha * (1 - t);
+        ctx.globalAlpha = Math.max(0, a * flick);
+        var d = p.r * (1 - 0.72 * t);
+        if(d < 0.4) d = 0.4;
+        ctx.drawImage(sprite, p.x - d, p.y - d * 1.7, d * 2, d * 2.6);
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  })();
+</script>
+</body>
+</html>
