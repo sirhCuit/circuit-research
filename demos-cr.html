@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<title>Circuit Research Demos — Chris (sirhC) Morales</title>
+<meta name="description" content="Three short demos: fix a broken page, read a whitepaper in plain English, and preview the site scanner.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Sora:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#030a08; --bg:#04100c; --card:#071a13; --card-2:#0a241a;
+    --ink:#eafff5; --ink-soft:#a9d8c6; --ink-faint:#6f9c8a;
+    --mint:#3dffa8; --mint-bright:#6dffc0; --cyan:#3fd2f2; --amber:#ffc44d;
+    --error:#ff8383;
+    --line:#17382c; --focus:#3dffa8; --glow:rgba(61,255,168,.28);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; color:var(--ink);
+    font-family:"Sora",system-ui,-apple-system,"Segoe UI",sans-serif;
+    background:#04100c;
+  }
+  /* Background: identical to the CV splash. Same hero art, same kenDrift,
+     same shade stack. Decorative layers only. */
+  .bg-art{
+    position:fixed; inset:0; z-index:0; width:100%; height:100%;
+    object-fit:cover; object-position:78% 50%; pointer-events:none;
+    animation:kenDrift 26s ease-in-out infinite alternate;
+  }
+  .bg-shade{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      linear-gradient(rgba(3,14,10,.38), rgba(3,14,10,.38)),
+      linear-gradient(100deg, rgba(3,14,10,.96) 30%, rgba(3,14,10,.72) 58%, rgba(3,14,10,.28) 100%),
+      linear-gradient(to top, rgba(3,14,10,.9), rgba(3,14,10,0) 42%);
+  }
+  @keyframes kenDrift{ from{transform:scale(1) translateX(0)} to{transform:scale(1.09) translateX(-1.6%)} }
+  .skip{position:absolute; left:-9999px; top:0; background:var(--mint); color:#04100c; padding:.75rem 1rem; z-index:60; font-weight:700; border-radius:0 0 .5rem 0}
+  .skip:focus{left:0}
+  :focus-visible{outline:3px solid var(--focus); outline-offset:2px; border-radius:4px}
+  .wrap{position:relative; z-index:1; max-width:1060px; margin:0 auto; padding:1.2rem clamp(1rem,3vw,2rem) 3rem}
+  header.hero{padding:1.4rem 0 .6rem}
+  h1{margin:0; line-height:1.1}
+  /* Wordmark, styled after the main site's top bar: Chakra Petch, pulsing
+     mint orb, and the nav-link underline sweep on hover/focus. */
+  .wordmark{
+    font-family:"Chakra Petch","Sora",sans-serif; font-weight:700;
+    font-size:clamp(1.55rem,4.6vw,2.3rem); letter-spacing:.04em; color:var(--ink);
+    text-decoration:none; display:inline-flex; align-items:center; gap:.6em;
+    min-height:44px; position:relative; padding-bottom:.18em;
+  }
+  .wordmark .dot{
+    width:.42em; height:.42em; flex:none; border-radius:50%;
+    background:var(--mint); box-shadow:0 0 0 0 var(--glow);
+    animation:nodePulse 2.6s ease-out infinite;
+  }
+  @keyframes nodePulse{
+    0%{box-shadow:0 0 0 0 var(--glow)}
+    70%{box-shadow:0 0 0 12px transparent}
+    100%{box-shadow:0 0 0 0 transparent}
+  }
+  .wordmark::after{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:3px; border-radius:2px;
+    background:var(--mint); transform:scaleX(0); transform-origin:left;
+    transition:transform .3s ease;
+  }
+  .wordmark:hover::after, .wordmark:focus-visible::after{transform:scaleX(1)}
+  .divider{
+    position:relative; height:2px; border-radius:2px; margin:.9rem 0 1rem;
+    background:linear-gradient(90deg, transparent, var(--mint) 12%, var(--mint-bright) 50%, var(--mint) 88%, transparent);
+    box-shadow:0 0 10px rgba(61,255,168,.35), 0 0 26px rgba(61,255,168,.18);
+  }
+  .divider > canvas.barfire{position:absolute; left:0; bottom:0; width:100%; height:56px; pointer-events:none; -webkit-mask-image:linear-gradient(to top,#000 46%,transparent 96%); mask-image:linear-gradient(to top,#000 46%,transparent 96%)}
+  .lede{font-size:1.06rem; color:var(--ink-soft); max-width:44rem; line-height:1.55}
+  .toc{display:flex; gap:.4rem 1.4rem; flex-wrap:wrap; margin:.4rem 0 0; padding:0; list-style:none}
+  .toc a{color:var(--mint); font-weight:600; display:inline-flex; align-items:center; min-height:44px}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1.4rem}
+  .card{background:linear-gradient(180deg,var(--card-2),var(--card)); border:1px solid var(--line); border-radius:18px; padding:1.1rem 1.2rem; box-shadow:0 10px 30px rgba(0,0,0,.45), 0 0 0 1px rgba(61,255,168,.04), 0 0 24px -12px var(--glow); transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease}
+  .card.glow-on{transform:translateY(-3px) scale(1.005); border-color:rgba(61,255,168,.65); box-shadow:0 16px 30px -16px rgba(61,255,168,.30), 0 6px 14px -8px rgba(0,0,0,.55), 0 0 26px -6px rgba(61,255,168,.38), inset 0 0 12px rgba(61,255,168,.10)}
+  @media (hover:hover){
+    .card:hover{transform:translateY(-3px) scale(1.005); border-color:rgba(61,255,168,.65); box-shadow:0 16px 30px -16px rgba(61,255,168,.30), 0 6px 14px -8px rgba(0,0,0,.55), 0 0 26px -6px rgba(61,255,168,.38), inset 0 0 12px rgba(61,255,168,.10)}
+  }
+  .card:focus-within{border-color:rgba(61,255,168,.65); box-shadow:0 16px 30px -16px rgba(61,255,168,.30), 0 6px 14px -8px rgba(0,0,0,.55), 0 0 26px -6px rgba(61,255,168,.38), inset 0 0 12px rgba(61,255,168,.10)}
+  .card.wide{grid-column:1/-1}
+  .card h2{font-family:"Chakra Petch","Sora",sans-serif; margin:.1rem 0 .5rem; font-size:1.35rem; color:var(--mint-bright)}
+  .card p{line-height:1.55; color:var(--ink-soft)}
+  .samplebox{background:#020604; border:1px dashed var(--line); border-radius:10px; padding:.8rem 1rem; font-size:.97rem; line-height:1.55; color:var(--ink)}
+  button.act{
+    min-height:44px; padding:.6rem 1.2rem; border-radius:999px; cursor:pointer;
+    border:2px solid var(--mint); background:var(--mint); color:#04100c;
+    font:inherit; font-weight:700; margin-top:.6rem; display:inline-block; text-decoration:none;
+  }
+  button.ghost, a.ghost{background:transparent; color:var(--mint)}
+  .result{margin-top:.8rem; font-weight:600; line-height:1.5}
+  .result .good{color:var(--mint-bright)}
+  select, input[type="url"], input[type="email"]{font:inherit; color:var(--ink); background:#020604; border:1.5px solid var(--line); border-radius:8px; padding:.6rem; width:100%; min-height:44px}
+  label.flabel{font-weight:600; display:block; margin:.7rem 0 .3rem}
+  .demo-stage{background:#FFFFFF; color:#1B1710; border-radius:10px; padding:1rem; border:1px solid var(--line)}
+  .demo-stage .broken-text{color:#A6A6A6; font-size:.92rem; line-height:1.5}
+  .demo-stage .fixed-text{color:#1B1710; font-size:1rem; line-height:1.6}
+  .demo-stage .tiny-btn{min-height:24px; padding:.1rem .5rem; font-size:.8rem; border-radius:6px; border:1px solid #888; background:#EEE; color:#333; cursor:pointer}
+  .demo-stage .big-btn{min-height:44px; padding:.6rem 1.1rem; font-size:1rem; font-weight:700; border-radius:8px; border:2px solid #0B6B5E; background:#0B6B5E; color:#fff; cursor:pointer}
+  .demo-stage label{font-weight:700; display:block; margin:.7rem 0 .3rem}
+  .demo-stage input{font:inherit; padding:.55rem; border:1.5px solid #4A453B; border-radius:6px; width:100%}
+  .issues{list-style:none; padding:0; margin:.8rem 0 0; line-height:1.6; color:var(--ink-soft)}
+  .issues li::before{content:"✗ "; color:var(--error); font-weight:800}
+  .issues li.fixed::before{content:"✓ "; color:var(--mint)}
+  .scanresult{border:1px solid var(--line); border-radius:10px; padding:.9rem 1rem; margin-top:.9rem; background:#020604}
+  .scanresult .score{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:1.6rem; font-weight:600; color:var(--amber)}
+  .scanresult table{width:100%; border-collapse:collapse; margin-top:.5rem; font-size:.95rem}
+  .scanresult td{padding:.3rem 0; border-top:1px solid var(--line); color:var(--ink-soft)}
+  .scanresult td:last-child{text-align:right; font-family:"IBM Plex Mono",ui-monospace,monospace; color:var(--ink)}
+  .scanform label{display:block; font-weight:600; margin:.9rem 0 .3rem}
+  .scanform input{width:100%; min-height:44px; padding:.55rem .7rem; border-radius:8px; border:1px solid var(--line); background:#020604; color:var(--ink); font:inherit}
+  .scanform input:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
+  .scanform .act{margin-top:1rem; cursor:pointer; font:inherit}
+  .pill{display:inline-block; padding:.2rem .7rem; border-radius:999px; font-family:"IBM Plex Mono",ui-monospace,monospace; font-weight:700; font-size:.95rem; color:#02110a; vertical-align:middle; margin-left:.6rem}
+  .pill-strong{background:var(--mint)} .pill-mixed{background:var(--cyan)}
+  .pill-atrisk{background:var(--amber)} .pill-critical{background:#ff8a75}
+  .tipline{font-size:.78rem; color:var(--ink-soft); margin-top:.7rem}
+  .tipwrap{position:relative; display:inline-block}
+  .tipbtn{background:none; border:none; color:var(--cyan); font:inherit; font-size:.78rem; text-decoration:underline dotted; cursor:pointer; padding:.2rem; min-height:24px}
+  .tipbox{position:absolute; left:0; bottom:130%; width:min(300px,80vw); background:#06231a; border:1px solid var(--cyan); border-radius:8px; padding:.6rem .7rem; font-size:.85rem; color:var(--ink); z-index:5; box-shadow:0 8px 24px rgba(0,0,0,.5)}
+  .scanerr{border:1px solid #ff8a75; border-radius:10px; padding:.8rem 1rem; margin-top:.9rem; background:#1c0703; color:#ffd9d2}
+  .tiers{display:grid; gap:.8rem; margin-top:1rem}
+  @media(min-width:640px){.tiers{grid-template-columns:1fr 1fr}}
+  .tier{border:1px solid var(--line); border-radius:10px; padding:.9rem 1rem; background:#020604}
+  .tier .price{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:1.25rem; color:var(--amber)}
+  .tag{display:inline-block; font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.75rem; letter-spacing:.06em; border:1px solid var(--amber); color:var(--amber); border-radius:999px; padding:.15rem .6rem; text-transform:uppercase}
+  footer.note{margin-top:1.6rem; color:var(--ink-faint); font-size:.92rem; line-height:1.55}
+  @media (max-width:760px){
+    .grid{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important}
+  }
+</style>
+</head>
+<body>
+<img class="bg-art" src="hero-art.webp" alt="" aria-hidden="true">
+<div class="bg-shade" aria-hidden="true"></div>
+<a class="skip" href="#main">Skip to main content</a>
+<div class="wrap">
+  <header class="hero">
+    <h1><a class="wordmark" href="https://circuit-research.com"><span class="dot" aria-hidden="true"></span>CIRCUIT RESEARCH DEMOS</a></h1>
+    <div class="divider" aria-hidden="true"><canvas class="barfire" id="barfire"></canvas></div>
+    <p class="lede">Three short demos. Pick one and try it.</p>
+    <nav aria-label="On this page">
+      <ul class="toc">
+        <li><a href="#fix">1 · Fix This Page</a></li>
+        <li><a href="#whitepaper">2 · Whitepapers Made Simple</a></li>
+        <li><a href="#scanner">3 · Site Scanner</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <div class="grid">
+      <section class="card wide" id="fix" aria-labelledby="fix-h">
+        <h2 id="fix-h">1 · Fix This Page</h2>
+        <p>This small page has three common accessibility problems. Use the button to see them fixed.</p>
+        <button class="act ghost" type="button" id="fixToggle" aria-pressed="false">Show the fixed version</button>
+        <div class="demo-stage" id="demoStage" style="margin-top:.9rem">
+          <p class="broken-text" id="demoText">Spring tune-up special. Book this week and save on a full safety check for the whole family.</p>
+          <button type="button" class="tiny-btn" id="demoBtn">Book</button>
+          <div id="demoFieldBroken">
+            <p style="margin:.7rem 0 .3rem; font-size:.9rem; color:#A6A6A6">Email</p>
+            <input type="email" aria-label="" placeholder="you@example.com" style="border-color:#C9C9C9">
+          </div>
+          <div id="demoFieldFixed" hidden>
+            <label for="demoEmail">Email address</label>
+            <input type="email" id="demoEmail" placeholder="you@example.com" autocomplete="email">
+          </div>
+        </div>
+        <ul class="issues" id="issueList">
+          <li id="iss1">Text is too light to read easily (WCAG 1.4.3)</li>
+          <li id="iss2">Button is smaller than the 44px minimum (WCAG 2.5.8)</li>
+          <li id="iss3">Email field has no label (WCAG 1.3.1 / 3.3.2)</li>
+        </ul>
+      </section>
+
+      <section class="card" id="whitepaper" aria-labelledby="wp-h">
+        <h2 id="wp-h">2 · Whitepapers Made Simple</h2>
+        <p>Pick a paragraph from a whitepaper. Then read the same thing in plain English.</p>
+        <label class="flabel" for="wpPick">Choose a paragraph</label>
+        <select id="wpPick">
+          <option value="0">How the network agrees</option>
+          <option value="1">The shared trading pot</option>
+          <option value="2">Proof without showing secrets</option>
+        </select>
+        <div class="samplebox" id="wpOut" style="margin-top:.8rem" aria-live="polite"></div>
+        <button class="act" type="button" id="wpBtn">Translate it</button>
+        <p class="result" id="wpPlain" aria-live="polite"></p>
+      </section>
+
+      <section class="card" id="scanner" aria-labelledby="scan-h">
+        <h2 id="scan-h">3 · Site Scanner</h2>
+        <p>Run the checks on your actual site. Enter your homepage and your email, and the scanner checks your homepage plus the 4 pages your main menu points to. You get a score out of 100 on the spot, and a fuller report by email.</p>
+        <form class="scanform" id="scan-form" novalidate>
+          <label for="scan-url">Your website address</label>
+          <input id="scan-url" name="url" type="url" inputmode="url" autocomplete="url" placeholder="https://yourbusiness.com" required aria-describedby="scan-privacy">
+          <label for="scan-email">Your email, for the report</label>
+          <input id="scan-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@yourbusiness.com" required aria-describedby="scan-privacy">
+          <div id="turnstile-box" style="margin-top:1rem"></div>
+          <button class="act" type="submit" id="scan-btn">Get my score + email report</button>
+          <p class="tipline" id="scan-privacy">Never sold. Only for your report and occasional product updates.
+            <span class="tipwrap">
+              <button type="button" class="tipbtn" id="tip-btn" aria-expanded="false" aria-controls="tip-box">How we use your email</button>
+              <span class="tipbox" id="tip-box" role="note" hidden>Your email is never sold to third parties. It is only used to deliver your email report, and to send you occasional product updates.</span>
+            </span>
+          </p>
+          <p id="scan-status" role="status" aria-live="polite" style="margin-top:.6rem"></p>
+        </form>
+        <div id="scan-error" class="scanerr" role="alert" hidden></div>
+        <div id="scan-out" hidden>
+          <div class="scanresult" aria-label="Your scanner result">
+            <p style="margin:0">Your automated check score</p>
+            <p style="margin:.4rem 0 0"><span class="score" id="scan-score">–</span><span class="pill" id="scan-pill">–</span></p>
+            <p id="scan-math" style="margin:.3rem 0 0; font-size:.92rem"></p>
+            <table id="scan-top" aria-label="Areas with the most issues found"></table>
+            <p id="scan-mail" style="margin:.7rem 0 0; font-size:.92rem"></p>
+          </div>
+          <h3 style="margin:1.1rem 0 .4rem">What this scan could not check</h3>
+          <p style="font-size:.95rem">Automated checks cover part of WCAG. These need a human pass, and a full audit covers them:</p>
+          <ul id="scan-notchecked" style="font-size:.95rem"></ul>
+          <div class="tiers" id="scan-tiers">
+            <div class="tier">
+              <h3 style="margin-top:0">Rapid Audit + Recode Report</h3>
+              <p class="price">$199</p>
+              <p style="font-size:.95rem">The 5 scanned pages, hand-verified, with a fix for every failure found on them.</p>
+              <a class="act tier-buy" data-tier="rapid" href="#" hidden>Order the Rapid Audit</a>
+            </div>
+            <div class="tier">
+              <h3 style="margin-top:0">Full Audit + Recode Report</h3>
+              <p class="price">From $899</p>
+              <p style="font-size:.95rem">Your whole site, up to 25 pages included, $25 per page beyond that. The complete fix list, page by page.</p>
+              <a class="act tier-buy" data-tier="full" href="#" hidden>Order the Full Audit</a>
+            </div>
+          </div>
+          <p style="font-size:.92rem">Either report is yours to take to any developer. We build the rails, you build the website.</p>
+        </div>
+        <p style="font-size:.92rem; margin-top:1rem">Prefer to answer questions instead? <a href="https://circuit-research.com/quiz.html">Take the free accessibility quiz</a>. The scanner lives there too.</p>
+      </section>
+    </div>
+
+    <footer class="note">
+      <p>Built by Chris (sirhC) Morales. Plain HTML, CSS, and JavaScript. Works with a keyboard and a screen reader.</p>
+    </footer>
+  </main>
+</div>
+
+<script>
+  (function(){
+    /* Fix This Page */
+    var fixed = false;
+    var fixBtn = document.getElementById('fixToggle');
+    fixBtn.addEventListener('click', function(){
+      fixed = !fixed;
+      fixBtn.setAttribute('aria-pressed', fixed ? 'true' : 'false');
+      fixBtn.textContent = fixed ? 'Show the broken version' : 'Show the fixed version';
+      var text = document.getElementById('demoText');
+      text.className = fixed ? 'fixed-text' : 'broken-text';
+      var btn = document.getElementById('demoBtn');
+      btn.className = fixed ? 'big-btn' : 'tiny-btn';
+      btn.textContent = fixed ? 'Book the tune-up' : 'Book';
+      document.getElementById('demoFieldBroken').hidden = fixed;
+      document.getElementById('demoFieldFixed').hidden = !fixed;
+      ['iss1','iss2','iss3'].forEach(function(id){ document.getElementById(id).classList.toggle('fixed', fixed); });
+    });
+
+    /* Whitepapers Made Simple */
+    var pairs = [
+      { j: '\u201CThe protocol achieves Byzantine fault tolerance through a delegated proof-of-stake consensus mechanism, wherein validator nodes stake native tokens as collateral to participate in block production and finality attestation.\u201D',
+        p: '\u201CPeople who hold the coin can lock some of it up to help run the network. They check new transactions and confirm they are real. If they cheat, they lose the coins they locked up.\u201D' },
+      { j: '\u201CLiquidity providers deposit token pairs into automated market maker pools, receiving LP tokens representing their pro-rata share of the pool, with impermanent loss exposure offset by trading fee accrual.\u201D',
+        p: '\u201CPeople put two kinds of coins into a shared pot that others trade against. They get a receipt token for their share and earn a cut of the trading fees. The catch: if prices move a lot, they can end up with less than if they had just held the coins.\u201D' },
+      { j: '\u201CUtilizing zero-knowledge succinct non-interactive arguments of knowledge, the system enables verification of computational integrity without disclosure of the underlying witness data.\u201D',
+        p: '\u201CThe system uses math that lets one computer prove it did a job correctly, without showing the private data behind it. Anyone can check the proof. Nobody sees the secret.\u201D' }
+    ];
+    var pick = document.getElementById('wpPick'), jOut = document.getElementById('wpOut'), pOut = document.getElementById('wpPlain');
+    function showJargon(){ jOut.textContent = pairs[Number(pick.value)].j; pOut.textContent = ''; }
+    pick.addEventListener('change', showJargon); showJargon();
+    document.getElementById('wpBtn').addEventListener('click', function(){
+      pOut.innerHTML = '<span class="good">Plain English:</span> ' + pairs[Number(pick.value)].p;
+    });
+  })();
+</script>
+<script>
+  (function(){
+    // SPITE card behavior: tap/click toggles the glow state
+    Array.prototype.forEach.call(document.querySelectorAll('.card'), function(card){
+      card.addEventListener('click', function(){ card.classList.toggle('glow-on'); });
+    });
+
+    // Divider effect: binary flame. 0s and 1s are born on the standalone
+    // divider bar and rise like flames, dense and bright at the base, thinning
+    // as they climb. Digits flip 0 to 1 as they flicker, sway gently, and a
+    // few percent are wisps that shoot higher and vanish. Matrix code, but it
+    // burns upward off the bar instead of raining down a wall.
+    var cv = document.getElementById('barfire');
+    if(!cv || !cv.getContext) return;
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var ctx = cv.getContext('2d');
+    var W = 0, H = 56, DPR = Math.min(window.devicePixelRatio || 1, 2);
+    var TARGET = 170;
+
+    var hotspots = [];
+    function makeHotspots(){
+      hotspots = [];
+      var n = Math.max(3, Math.round(W / 170));
+      for(var i = 0; i < n; i++) hotspots.push((i + 0.15 + Math.random() * 0.7) * (W / n));
+    }
+    function size(){
+      var w = cv.clientWidth || cv.parentElement.clientWidth || 0;
+      if(!w) return;
+      W = w;
+      cv.width = Math.round(W * DPR);
+      cv.height = Math.round(H * DPR);
+      TARGET = Math.max(120, Math.min(280, Math.round(W / 5)));
+      makeHotspots();
+    }
+    size();
+    window.addEventListener('resize', size);
+
+    function spawnX(){
+      if(hotspots.length && Math.random() < 0.6){
+        var hs = hotspots[Math.floor(Math.random() * hotspots.length)];
+        return hs + (Math.random() + Math.random() - 1) * 30;
+      }
+      return Math.random() * W;
+    }
+    function spawn(){
+      var roll = Math.random();
+      var kind = roll < 0.07 ? 'wisp' : (roll < 0.45 ? 'tongue' : 'base');
+      return {
+        ch: Math.random() < 0.5 ? '0' : '1',
+        x: spawnX(),
+        y: H + 4,
+        size: kind === 'wisp' ? 8 + Math.random() * 3 : (kind === 'tongue' ? 9 + Math.random() * 5 : 10 + Math.random() * 6),
+        vy: kind === 'wisp' ? 1.7 + Math.random() * 1.1 : (kind === 'tongue' ? 0.9 + Math.random() * 0.8 : 0.5 + Math.random() * 0.5),
+        cap: kind === 'wisp' ? 48 + Math.random() * 7 : (kind === 'tongue' ? 28 + Math.random() * 15 : 10 + Math.random() * 13),
+        alpha: kind === 'wisp' ? 0.5 : (kind === 'tongue' ? 0.75 : 0.95),
+        color: kind === 'wisp' ? '63,210,242' : (kind === 'tongue' ? '61,255,168' : '196,255,228'),
+        kind: kind,
+        sway: Math.random() * Math.PI * 2,
+        swaySpeed: 0.03 + Math.random() * 0.05,
+        seed: Math.random() * 100
+      };
+    }
+    var parts = [];
+    for(var i = 0; i < 170; i++){ var p0 = spawn(); p0.y = H - Math.random() * p0.cap; parts.push(p0); }
+
+    // Loop control uses a generation ticket plus a live-loop guard. Every
+    // visibility change issues a new ticket, and a loop only keeps running
+    // while its ticket is current. The first chain used to read the ticket
+    // lazily when its first frame fired, so a page that loaded hidden
+    // (background tab, prerender) adopted the NEW ticket when the tab was
+    // shown and became an immortal second loop running beside the fresh
+    // one: instant 2x speed. Now every chain captures its ticket by value
+    // at spawn time, and startLoop refuses to spawn while a chain holding
+    // the current ticket is already alive.
+    var frame = 0, gen = 0, running = false, liveGen = -1;
+    function startLoop(){
+      if(running && liveGen === gen) return;
+      running = true; liveGen = gen;
+      var g = gen;
+      requestAnimationFrame(function(){ tick(g); });
+    }
+    document.addEventListener('visibilitychange', function(){
+      gen++;
+      if(!document.hidden){ startLoop(); }
+    });
+
+    function tick(g){
+      if(g !== gen){ if(liveGen === g){ running = false; liveGen = -1; } return; }
+      if(!W) size();
+      frame++;
+      if(frame % 360 === 0) makeHotspots();
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'alphabetic';
+      while(parts.length < TARGET){ parts.push(spawn()); if(Math.random() < 0.4) break; }
+      for(var i = parts.length - 1; i >= 0; i--){
+        var p = parts[i];
+        p.sway += p.swaySpeed;
+        p.x += Math.sin(p.sway + p.seed) * 0.25 + (Math.random() - 0.5) * 0.2;
+        p.y -= p.vy;
+        var risen = H - p.y;
+        var t = risen / p.cap;
+        if(t >= 1){ parts.splice(i, 1); continue; }
+        if(Math.random() < (p.kind === 'base' ? 0.008 : 0.02)) p.ch = p.ch === '0' ? '1' : '0';
+        var flick = 0.85 + 0.15 * Math.sin(p.sway * 4.3 + p.seed * 3);
+        var a = p.kind === 'wisp' ? p.alpha * Math.pow(1 - t, 1.6) : p.alpha * (1 - t * 0.8);
+        ctx.font = '700 ' + p.size.toFixed(1) + 'px "IBM Plex Mono", ui-monospace, monospace';
+        ctx.fillStyle = 'rgba(' + p.color + ',' + Math.max(0, a * flick).toFixed(3) + ')';
+        ctx.fillText(p.ch, p.x, p.y);
+      }
+      requestAnimationFrame(function(){ tick(g); });
+    }
+    startLoop();
+  })();
+</script>
+
+<script>
+(function(){
+  // Fill these two at deploy time (see scanner-build/DEPLOY.md).
+  var WORKER_URL = "https://cr-scanner.chris-morales0129.workers.dev";
+  var TURNSTILE_SITE_KEY = "";
+  var STRIPE_LINKS = { rapid: "", full: "" };
+
+  var form = document.getElementById('scan-form');
+  if (!form) return;
+  var btn = document.getElementById('scan-btn');
+  var status = document.getElementById('scan-status');
+  var errBox = document.getElementById('scan-error');
+  var out = document.getElementById('scan-out');
+
+  // Privacy popup: hover previews on desktop, press toggles everywhere, Esc closes.
+  var tipBtn = document.getElementById('tip-btn');
+  var tipBox = document.getElementById('tip-box');
+  var tipLatched = false;
+  function tipShow(on){
+    tipBox.hidden = !on;
+    tipBtn.setAttribute('aria-expanded', on ? 'true' : 'false');
+  }
+  tipBtn.addEventListener('mouseenter', function(){ tipShow(true); });
+  tipBtn.addEventListener('mouseleave', function(){ if (!tipLatched) tipShow(false); });
+  tipBtn.addEventListener('focus', function(){ tipShow(true); });
+  tipBtn.addEventListener('blur', function(){ if (!tipLatched) tipShow(false); });
+  tipBtn.addEventListener('click', function(){ tipLatched = !tipLatched; tipShow(tipLatched); });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && !tipBox.hidden) { tipLatched = false; tipShow(false); tipBtn.focus(); }
+  });
+
+  // Turnstile only when a site key is configured.
+  var tsToken = "";
+  if (TURNSTILE_SITE_KEY) {
+    var sc = document.createElement('script');
+    sc.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+    sc.async = true; sc.defer = true;
+    sc.onload = function(){
+      window.turnstile.render('#turnstile-box', {
+        sitekey: TURNSTILE_SITE_KEY,
+        callback: function(t){ tsToken = t; }
+      });
+    };
+    document.head.appendChild(sc);
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    errBox.hidden = true;
+    out.hidden = true;
+    var url = document.getElementById('scan-url').value.trim();
+    var email = document.getElementById('scan-email').value.trim();
+    if (!url) { showErr("Enter your website address."); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { showErr("Enter a valid email address for the report."); return; }
+    btn.disabled = true;
+    status.textContent = "Scanning your site. This can take up to a minute.";
+    fetch(WORKER_URL + "/scan", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: url, email: email, turnstileToken: tsToken })
+    }).then(function(r){ return r.json(); }).then(function(j){
+      btn.disabled = false;
+      status.textContent = "";
+      if (!j.ok) { showErr(j.error || "Something went wrong. Try again."); return; }
+      render(j);
+    }).catch(function(){
+      btn.disabled = false;
+      status.textContent = "";
+      showErr("The scanner could not be reached. Try again in a moment.");
+    });
+  });
+
+  function showErr(msg){
+    errBox.textContent = msg;
+    errBox.hidden = false;
+    errBox.setAttribute('tabindex', '-1');
+    errBox.focus();
+  }
+
+  function render(j){
+    document.getElementById('scan-score').textContent = j.score + " / 100";
+    var pill = document.getElementById('scan-pill');
+    pill.textContent = j.band;
+    pill.className = "pill pill-" + j.band.toLowerCase().replace(/\s+/g, '');
+    document.getElementById('scan-math').textContent =
+      "Based on automated checks only: " + j.checksPassed + " checks passed across " + j.pagesScanned.length + " pages. This is not a compliance verdict.";
+    var table = document.getElementById('scan-top');
+    table.innerHTML = "";
+    if (j.topCategories.length) {
+      j.topCategories.forEach(function(c){
+        var tr = document.createElement('tr');
+        var a = document.createElement('td'); a.textContent = c.name;
+        var b = document.createElement('td'); b.textContent = c.issues + (c.issues === 1 ? " problem" : " problems");
+        tr.appendChild(a); tr.appendChild(b); table.appendChild(tr);
+      });
+    } else {
+      var tr = document.createElement('tr');
+      var td = document.createElement('td'); td.textContent = "No issues found by the automated checks.";
+      tr.appendChild(td); table.appendChild(tr);
+    }
+    document.getElementById('scan-mail').textContent = j.emailSent
+      ? "Your fuller report is on its way to the email you gave."
+      : "Your report could not be emailed just now. This result is saved, and the report will follow.";
+    var ul = document.getElementById('scan-notchecked');
+    ul.innerHTML = "";
+    j.notChecked.forEach(function(n){
+      var li = document.createElement('li'); li.textContent = n; ul.appendChild(li);
+    });
+    document.querySelectorAll('.tier-buy').forEach(function(a){
+      var link = STRIPE_LINKS[a.getAttribute('data-tier')];
+      if (link) { a.href = link + (link.indexOf('?') > -1 ? '&' : '?') + "client_reference_id=" + encodeURIComponent(j.runId); a.hidden = false; }
+    });
+    out.hidden = false;
+    out.setAttribute('tabindex', '-1');
+    out.focus();
+  }
+})();
+</script>
+</body>
+</html>
